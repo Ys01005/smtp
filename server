@@ -1,0 +1,54 @@
+from socket import AF_INET, SOCK_STREAM, socket
+import uuid
+import json 
+from time import sleep
+if __name__ == '__main__':
+   print("Application started")
+   s = socket(AF_INET,SOCK_STREAM)
+   print('TCP socket created')
+   s.bind(('127.0.0.1',1116))
+   print('socket is bound to %s:%d' % s.getsockname())
+   backlog = 0 
+   s.listen(backlog)
+   print('Socket %s:%d is in listening state' % s.getsockname())
+   client_socket,client_addr = s.accept()
+   print('new client connected from %s:%d'% client_addr)
+   print ('local end-point socket bound on: %s:%d'%client_socket.getsockname())
+   print('Mac address: ',hex(uuid.getnode()))
+   data = r'{"code":"0","msg":"ok","obj":[{"port":"44139","ip":"113.73.67.60"}],"errno":0,"data":[null]}'
+   ip = json.loads(data)['obj'][0]['ip']
+   print('IP Address: ',ip)
+   client_socket.send("220".encode())
+   Case_1 = client_socket.recv(1024).decode("utf-8")
+   print(Case_1)
+   if Case_1 != 'Welcome':
+       print("error1")
+   client_socket.send("250".encode())
+   Case_2= client_socket.recv(1024).decode("utf-8")
+   print(Case_2)
+   if Case_2!= 'MAIL FROM:<ys01005@SweedyNew.com>':
+       print("error2")
+   client_socket.send("250".encode())
+   Case_3= client_socket.recv(1024).decode("utf-8")
+   print(Case_3)
+   if Case_3 != "TO:<ys01006@SweedyNew.com>":
+       print("error3")
+   client_socket.send("250".encode())
+   Case_4 = client_socket.recv(1024).decode("utf-8")
+   print(Case_4)
+   if Case_4!= "DATA":
+       print(data)
+   client_socket.send("354".encode())
+   Case_5= client_socket.recv(1024).decode("utf-8")
+   print(Case_5)
+   client_socket.send("221".encode())
+   input('press enter to terminate...')
+   wait_secs = 5
+   print("waitaing %d seconds before termenation   " %wait_secs)
+   sleep(wait_secs)
+   s.close()
+   print('Terminating   ')
+   client_socket.close()
+   print('closed the client socket')
+   s.close()
+  
