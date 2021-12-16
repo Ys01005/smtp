@@ -1,0 +1,57 @@
+from socket import AF_INET, SOCK_STREAM, socket
+import uuid
+import json
+from time import sleep
+print("Welcome To SweedyNew")
+if __name__ == '__main__':
+   print("Application started")
+   s = socket(AF_INET,SOCK_STREAM)
+   print('TCP socket created')
+   server_address =('127.0.0.1',1116)
+   s.connect(server_address)
+   print('socket connected to %s:%d' % s.getpeername())
+   print ('local end-point is bound to %s:%d'%s.getsockname())
+   print('Mac address : ',hex(uuid.getnode()))
+   data = r'{"code":"0","msg":"ok","obj":[{"port":"44139","ip":"113.73.67.60"}],"errno":0,"data":[null]}'
+   ip = json.loads(data)['obj'][0]['ip']
+   print('IP Address: ',ip)
+   recv = s.recv(1024).decode("utf-8")
+   print (recv)
+   if recv[:3] != '220' :
+    print ('220 reply not received from server.')
+   welcomeCommand = 'Welcome'
+   s.send(welcomeCommand.encode())
+   recv1 = s.recv(1024).decode("utf-8")
+   print (recv1)
+   if recv1[:3] != '250' :
+       print ('250 reply not received from server.1')
+   mailfromCommand = 'MAIL FROM:<ys01005@SweedyNew.com>'
+   s.send(mailfromCommand.encode())
+   recv2 = s.recv(1024).decode("utf-8")
+   print (recv2)
+   if recv2[:3] != '250' :
+       print ('250 reply not received from server.2')
+   rcptToCommand = 'RCPT TO:<ys01006@SweedyNew.com>'
+   s.send(rcptToCommand.encode())
+   recv3 = s.recv(1024).decode("utf-8")
+   print (recv3)
+   if recv3[:3] != '250' :
+       print ('250 reply not received from server.3')
+   dataCommand = 'DATA'
+   s.send(dataCommand.encode())
+   recv4 = s.recv(1024).decode("utf-8")
+   print (recv4)
+   if recv4[:3] != '354' :
+       print ('354 reply not received from server.4')
+   endCommand = "End"
+   s.send(endCommand.encode())
+   recv5 = s.recv(1024).decode("utf-8")
+   print (recv5 )
+   if recv5[:3] != '221' :
+       print ('221 reply not received from server.5')
+   input('Press enter to terminate    ')
+   wait_secs = 5
+   print("waitaing %d seconds before termenation   " %wait_secs)
+   sleep(wait_secs)
+   s.close()
+   print('Terminating...')
