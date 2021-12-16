@@ -19,8 +19,8 @@ if __name__ == '__main__':
    print (recv)
    if recv[:3] != '220' :
     print ('220 reply not received from server.')
-   welcomeCommand = 'Welcome'
-   s.send(welcomeCommand.encode())
+   heloCommand = 'Helo'
+   s.send(heloCommand.encode())
    recv1 = s.recv(1024).decode("utf-8")
    print (recv1)
    if recv1[:3] != '250' :
@@ -55,3 +55,4 @@ if __name__ == '__main__':
    sleep(wait_secs)
    s.close()
    print('Terminating...')
+#some comments are in the file for both servers
